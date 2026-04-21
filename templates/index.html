@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quiz Game App Server - Distributed System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <h1>Quiz Game (Multiplayer)</h1>
+
+    <!-- PLAYER SETUP -->
+    <div id="menu">
+        <input id="name" placeholder="Enter your name">
+
+        <br><br>
+
+        <button onclick="createGame()">Create Game</button>
+        <button onclick="joinGame()">Join Game</button>
+    </div>
+
+    <!-- Waiting Screen -->
+    <div id="waitingScreen" style="display:none;">
+        <h2>Waiting for your opponent...</h2>
+        <p id="waitingRoom"></p>
+    </div>
+
+    <!-- GAME AREA -->
+    <div id="game" style="display:none;">
+        <h3 id="turn"></h3>
+
+        <div id="quiz"></div>
+
+        <!-- LEADERBOARD -->
+        <h3>Leaderboard</h3>
+        <p id="leaderboard"></p>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
