@@ -1,7 +1,5 @@
 from flask import Flask, render_template, jsonify, request
 import json
-import random
-import string
 
 games = {}  # store active games
 
@@ -29,6 +27,7 @@ def create_game():
 
     room = "1234"  #fixed room, no need to enter 
 
+    # Always reset the game state so Try Again starts fresh
     games[room] = {
         "players": [name],
         "scores": [0, 0],
@@ -60,7 +59,13 @@ def join_game():
 
 @app.route('/state/<room>')
 def get_state(room):
-    return jsonify(games.get(room, {}))
+    game = games.get(room, {})
+    if not game:
+        return jsonify({})
+    questions = load_questions()
+    result = dict(game)
+    result['gameOver'] = game.get('current', 0) >= len(questions)
+    return jsonify(result)
 
 @app.route('/answer', methods=['POST'])
 def answer():

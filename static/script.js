@@ -5,7 +5,6 @@ let players = [];
 let scores = [0, 0];
 let room = "";
 let playerName = "";
-let lastQuestionIndex = -1;
 
 function createGame() {
     let name = document.getElementById('name').value.trim();
@@ -113,31 +112,7 @@ function nextQuestion() {
     }
 }
 
-function endGame() {
-    let p1 = players[0];
-    let p2 = players[1];
-
-    document.getElementById('quiz').innerHTML = `
-        <h2>Game Over</h2>
-        <p>${p1}: ${scores[0]}</p>
-        <p>${p2}: ${scores[1]}</p>
-    `;
-
-    // Save BOTH players
-    fetch('/submit', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ name: p1, score: scores[0] })
-    });
-
-    fetch('/submit', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ name: p2, score: scores[1] })
-    }).then(() => loadLeaderboard());
-}
-
-function loadLeaderboard() {
+function loadLeaderboard(callback) {
     if (!room) return;
 
     fetch('/leaderboard/' + room)
@@ -153,30 +128,17 @@ function loadLeaderboard() {
             else if (index === 1) rank = "2nd";
             else rank = "#" + (index + 1);
 
-            html += `<li>${rank} - ${p.name}: ${p.score}</li>`;
+            html += `${rank} - ${p.name}: ${p.score} <br>`;
         });
 
         document.getElementById("leaderboard").innerHTML = html;
+
+        if (typeof callback === "function") callback();
     });
 }
 
 function updateUI(data) {
     if (!data) return;
-    
-    if (data.gameOver) {
-        document.getElementById("waitingScreen").style.display = "none";
-        document.getElementById("game").style.display = "block";
-        
-        document.getElementById("turn").style.display = "none"; 
-
-        document.getElementById("quiz").innerHTML = `
-            <h2>Game Over</h2>
-            <p>${data.game.players[0]}: ${data.game.scores[0]}</p>
-            <p>${data.game.players[1]}: ${data.game.scores[1]}</p>
-        `;
-        
-        return;
-    }
 
     const players = data.players || [];
 
@@ -184,36 +146,42 @@ function updateUI(data) {
         document.getElementById("waitingScreen").style.display = "block";
         document.getElementById("game").style.display = "none";
         return;
-    } 
+    }
 
     document.getElementById("waitingScreen").style.display = "none";
     document.getElementById("game").style.display = "block";
 
-    if (!data.gameOver) {
+    if (data.gameOver) {
+        document.getElementById("turn").style.display = "none";
+        document.getElementById("quiz").innerHTML = "<h2>Game Over</h2>";
+
+        loadLeaderboard(function() {
+            if (!document.getElementById("tryAgainBtn")) {
+                let leaderboardEl = document.getElementById("leaderboard");
+                let btn = document.createElement("button");
+                btn.id = "tryAgainBtn";
+                btn.innerText = "Try Again";
+                btn.onclick = resetGame;
+                leaderboardEl.insertAdjacentElement("afterend", btn);
+            }
+        });
+    } else {
         document.getElementById("turn").style.display = "block";
         document.getElementById("turn").innerText =
             "Turn: " + players[data.turn];
-    }
 
-    loadLeaderboard();
-    renderQuestion(data);
+        loadLeaderboard();
+        renderQuestion(data);
+    }
 }
 
 function renderQuestion(data) {
     fetch('/questions')
     .then(res => res.json())
     .then(questions => {
-
         let q = questions[data.current];
 
-        if (!q) {
-            document.getElementById("quiz").innerHTML =
-                "<h2>Game Over</h2>";
-                
-            document.getElementById("turn").style.display = "none"; 
-            
-            return;
-        }
+        if (!q) return;
 
         let html = `<h3>${q.question}</h3>`;
 
@@ -223,6 +191,42 @@ function renderQuestion(data) {
 
         document.getElementById("quiz").innerHTML = html;
     });
+}
+
+function resetGame() {
+    // Reset all client-side state
+    questions = [];
+    current = 0;
+    currentPlayer = 0;
+    players = [];
+    scores = [0, 0];
+    room = "";
+    playerName = "";
+
+    // Clear name input
+    let nameInput = document.getElementById('name');
+    if (nameInput) nameInput.value = "";
+
+    // Remove Try Again button if it exists
+    let btn = document.getElementById("tryAgainBtn");
+    if (btn) btn.remove();
+
+    // Clear leaderboard
+    let leaderboardEl = document.getElementById("leaderboard");
+    if (leaderboardEl) leaderboardEl.innerHTML = "";
+
+    // Clear quiz area
+    let quizEl = document.getElementById("quiz");
+    if (quizEl) quizEl.innerHTML = "";
+
+    // Hide turn indicator
+    let turnEl = document.getElementById("turn");
+    if (turnEl) turnEl.style.display = "none";
+
+    // Show menu, hide game and waiting screens
+    document.getElementById("menu").style.display = "block";
+    document.getElementById("game").style.display = "none";
+    document.getElementById("waitingScreen").style.display = "none";
 }
 
 function startPolling() {

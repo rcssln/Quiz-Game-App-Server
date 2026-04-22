@@ -8,33 +8,55 @@
 
 <body>
 
-    <h1>Quiz Game (Multiplayer)</h1>
+    <div class="app-container flex-center">
 
-    <!-- PLAYER SETUP -->
-    <div id="menu">
-        <input id="name" placeholder="Enter your name">
+        <div id="menu" class="card-auth">
 
-        <br><br>
+            <div class="title-large">Quiz Game App Server</div>
 
-        <button onclick="createGame()">Create Game</button>
-        <button onclick="joinGame()">Join Game</button>
-    </div>
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <input id="name" class="input-field" placeholder="Enter your name">
+                </div>
 
-    <!-- Waiting Screen -->
-    <div id="waitingScreen" style="display:none;">
-        <h2>Waiting for your opponent...</h2>
-        <p id="waitingRoom"></p>
-    </div>
+                <div class="input-wrapper">
+                    <input class="input-field readonly" value="Room # 1234" readonly>
+                </div>
+            </div>
 
-    <!-- GAME AREA -->
-    <div id="game" style="display:none;">
-        <h3 id="turn"></h3>
+            <button class="btn-primary" onclick="createGame()" style="margin-top:10px;">
+                Create Game
+            </button>
 
-        <div id="quiz"></div>
+            <button class="btn-primary" onclick="joinGame()">
+                Join Game
+            </button>
 
-        <!-- LEADERBOARD -->
-        <h3>Leaderboard</h3>
-        <p id="leaderboard"></p>
+        </div>
+
+        <!-- WAITING -->
+        <div id="waitingScreen" class="waiting-screen" style="display:none;">
+            <h2>Waiting for your opponent...</h2>
+            <p id="waitingRoom" class="room-badge"></p>
+        </div>
+
+        <!-- GAME -->
+        <div id="game" style="display:none;" class="game-main">
+
+            <div id="turn" class="turn-banner"></div>
+
+            <div id="quiz"></div>
+
+            <!-- Leaderboard -->
+            <div class="leaderboard-card">
+                <div class="leaderboard-header">
+                    <span class="leaderboard-title">Leaderboard</span>
+                </div>
+                <div id="leaderboard"></div>
+            </div>
+
+        </div>
+
     </div>
 
     <script src="/static/script.js"></script>
