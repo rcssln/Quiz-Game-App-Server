@@ -8,5 +8,60 @@
     "question": "2 + 2 = ?",
     "choices": ["3", "4", "5", "6"],
     "answer": "4"
+  },
+  {
+    "question": "Which gas do plants absorb from the atmosphere?",
+    "choices": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+    "answer": "Carbon Dioxide"
+  },
+  {
+    "question": "What is the smallest prime number?",
+    "choices": ["0", "1", "2", "3"],
+    "answer": "2"
+  },
+  {
+    "question": "Who is known as the father of computers?",
+    "choices": ["Alan Turing", "Charles Babbage", "Bill Gates", "Steve Jobs"],
+    "answer": "Charles Babbage"
+  },
+  {
+    "question": "What does CPU stand for?",
+    "choices": ["Central Process Unit", "Central Processing Unit", "Computer Personal Unit", "Central Program Unit"],
+    "answer": "Central Processing Unit"
+  },
+  {
+    "question": "Which continent is the Sahara Desert located in?",
+    "choices": ["Asia", "Africa", "Australia", "South America"],
+    "answer": "Africa"
+  },
+  {
+    "question": "What is the capital of France?",
+    "choices": ["Berlin", "Madrid", "Paris", "Rome"],
+    "answer": "Paris"
+  },
+  {
+    "question": "2 + 2 = ?",
+    "choices": ["3", "4", "5", "6"],
+    "answer": "4"
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "choices": ["Earth", "Mars", "Jupiter", "Venus"],
+    "answer": "Mars"
+  },
+  {
+    "question": "Who wrote 'Romeo and Juliet'?",
+    "choices": ["Charles Dickens", "William Shakespeare", "Mark Twain", "Jane Austen"],
+    "answer": "William Shakespeare"
+  },
+  {
+    "question": "What is the largest ocean on Earth?",
+    "choices": ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"],
+    "answer": "Pacific Ocean"
+  },
+  {
+    "question": "Which programming language is known as the backbone of web development?",
+    "choices": ["Python", "C++", "JavaScript", "Java"],
+    "answer": "JavaScript"
   }
 ]

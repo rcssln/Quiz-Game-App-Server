@@ -1,21 +1,18 @@
 from flask import Flask, render_template, jsonify, request
 import json
 
-games = {}  # store active games
+games = {}  # store active game room, such as the names of the players and their score
 
 app = Flask(__name__)
 
-# Load questions
 def load_questions():
     with open('questions.json') as f:
         return json.load(f)
 
-# Load leaderboard
 def load_leaderboard():
     with open('leaderboard.json') as f:
         return json.load(f)
 
-# Save leaderboard
 def save_leaderboard(data):
     with open('leaderboard.json', 'w') as f:
         json.dump(data, f)
@@ -25,7 +22,7 @@ def create_game():
     data = request.json
     name = data['name']
 
-    room = "1234"  #fixed room, no need to enter 
+    room = "1234"  #fixed room, for demo lang haha hassle ag type random code
 
     # Always reset the game state so Try Again starts fresh
     games[room] = {
@@ -57,14 +54,16 @@ def join_game():
 
     return jsonify({"message": "Joined room 1234"})
 
-@app.route('/state/<room>')
+@app.route('/state/<room>') # dynamic route
 def get_state(room):
     game = games.get(room, {})
+
     if not game:
         return jsonify({})
+    
     questions = load_questions()
-    result = dict(game)
-    result['gameOver'] = game.get('current', 0) >= len(questions)
+    result = dict(game) # copies the game data
+    result['gameOver'] = game.get('current', 0) >= len(questions) # check if the game is finished
     return jsonify(result)
 
 @app.route('/answer', methods=['POST'])
@@ -78,26 +77,26 @@ def answer():
     questions = load_questions()
 
     # GAME OVER CHECK (BEFORE DOING ANYTHING)
-    if game["current"] >= len(questions):
+    if game["current"] >= len(questions): # check if no more questions
         return jsonify({
             "gameOver": True,
             "game": game
         })
 
-    # turn check
+    # check if wrong player answers
     if game["players"][game["turn"]] != player:
         return jsonify({"error": "Not your turn", "game": game})
 
-    current_q = questions[game["current"]]
+    current_q = questions[game["current"]] # get the current question
 
     if choice == current_q["answer"]:
-        game["scores"][game["turn"]] += 1
+        game["scores"][game["turn"]] += 1 # if the answer is correct +1
 
-    # move to next question
+    # move to the next question
     game["current"] += 1
-    game["turn"] = (game["turn"] + 1) % 2
+    game["turn"] = (game["turn"] + 1) % 2 # swtich player
 
-    # FINAL CHECK AFTER INCREMENT
+    # same as line 80
     if game["current"] >= len(questions):
         return jsonify({
             "gameOver": True,
@@ -117,8 +116,8 @@ def get_questions():
 @app.route('/submit', methods=['POST'])
 def submit_score():
     data = request.json
-    leaderboard = load_leaderboard()
 
+    leaderboard = load_leaderboard()
     leaderboard.append(data)
 
     # Sort highest score first
